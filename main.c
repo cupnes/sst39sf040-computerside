@@ -29,13 +29,11 @@ static void waitRDY(void) {
 
 // Send a byte of data to the flash chip.
 static void programByte(uint8_t dat) {
-	printf("## BEGIN(programByte): dat = 0x%02x\n", dat);
 	uint8_t datr;
 	RS232_SendByte(COM_PORT, dat);
 	RS232_PollComport(COM_PORT, &datr, 1);
 	if (datr != 'N')
 		printf("ERROR: Programming byte letter code '%c' failed\n", datr);
-	printf("## END(programByte): dat = 0x%02x\n", dat);
 }
 
 // Show COM port list.
@@ -135,6 +133,7 @@ int main(int argc, char** argv) {
 	uint8_t* dat = NULL;
 
 	// Flashing mode.
+	size_t size = 0;
 	if (!dump) {
 		// Open file for reading.
 		fp = fopen(argv[2], "rb");
@@ -147,7 +146,7 @@ int main(int argc, char** argv) {
 
 		// Get file size.
 		fseek(fp, 0L, SEEK_END);
-		size_t size = ftell(fp);
+		size = ftell(fp);
 
 		// Check for size mismatch.
 		if (size > capacity) {
@@ -205,7 +204,6 @@ int main(int argc, char** argv) {
 	uint32_t x;
 	for (x = 0; x < capacity; ++x) {
 		uint8_t data;
-		printf("## BEGIN: x = %d\n", x);
 		if (dump) {
 			RS232_PollComport(COM_PORT, &data, 1);
 			fputc(data, fp);
@@ -214,13 +212,18 @@ int main(int argc, char** argv) {
 			RS232_PollComport(COM_PORT, &data, 1);
 			if (data != dat[x])
 				printf("Byte %d at address %d should be %d\n\n", data, x, dat[x]);
+
+			if ((x + 1) >= size) {
+				break;
+			}
 		}
-		/* if ((x & 255) == 0) */
-		/* 	printf("Progress : %% %f\r", (float)x / (float)capacity * 100.0); */
-		printf("## END: x = %d\n", x);
+		if ((x & 255) == 0) {
+			printf("\nProgress : %% %f\n", (float)x / (float)capacity * 100.0);
+		}
+		printf(".");
 	}
 
-	printf("-------- COMPLETED --------\n\n");
+	printf("-------- COMPLETED(x=%d) --------\n\n", x);
 
 	// Close serial connection.
 	RS232_CloseComport(COM_PORT);
