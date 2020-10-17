@@ -172,6 +172,7 @@ int RS232_OpenComport(int comport_number, int baudrate)
 
 int RS232_PollComport(int comport_number, unsigned char *buf, int size)
 {
+	printf("## BEGIN(RS232_PollComport): comport_number=%d\n", comport_number);
   int n;
 
 #ifndef __STRICT_ANSI__                       /* __STRICT_ANSI__ is defined when the -ansi option is used for gcc */
@@ -181,6 +182,8 @@ int RS232_PollComport(int comport_number, unsigned char *buf, int size)
 #endif
 
   n = read(Cport[comport_number], buf, size);
+
+  printf("## END(RS232_PollComport): comport_number=%d\n", comport_number);
 
   return(n);
 }
