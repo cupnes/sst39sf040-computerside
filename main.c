@@ -209,9 +209,6 @@ int main(int argc, char** argv) {
 			fputc(data, fp);
 		} else {
 			programByte(dat[x]);
-			RS232_PollComport(COM_PORT, &data, 1);
-			if (data != dat[x])
-				printf("Byte %d at address %d should be %d\n\n", data, x, dat[x]);
 
 			if ((x + 1) >= size) {
 				break;
