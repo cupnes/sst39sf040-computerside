@@ -29,11 +29,7 @@ static void waitRDY(void) {
 
 // Send a byte of data to the flash chip.
 static void programByte(uint8_t dat) {
-	uint8_t datr;
 	RS232_SendByte(COM_PORT, dat);
-	RS232_PollComport(COM_PORT, &datr, 1);
-	if (datr != 'N')
-		printf("ERROR: Programming byte letter code '%c' failed\n", datr);
 }
 
 // Show COM port list.
