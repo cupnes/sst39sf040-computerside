@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 	printf("%s on COM port %d\n", argv[2], COM_PORT);
 
 	// Open COM port.
-	if (RS232_OpenComport(COM_PORT, 500000)) {
+	if (RS232_OpenComport(COM_PORT, 19200)) {
 		printf("ERROR: COM port %i could not be opened\n", COM_PORT);
 		printCOM();
 		return 1;
